@@ -19,6 +19,10 @@ import {
       title: "",
       description: "",
       posterUrl: "",
+      genre:"",
+      language:"",
+      seatCol:0,
+      seatRow:0,
       releaseDate: "",
       featured: false,
     });
@@ -57,7 +61,7 @@ import {
               onChange={handleChange}
               name="title"
               variant="standard"
-              margin="normal"
+             
             />
             <FormLabel sx={labelProps}>Description</FormLabel>
             <TextField
@@ -65,7 +69,7 @@ import {
               onChange={handleChange}
               name="description"
               variant="standard"
-              margin="normal"
+              
             />
             <FormLabel sx={labelProps}>Poster URL</FormLabel>
             <TextField
@@ -73,7 +77,7 @@ import {
               onChange={handleChange}
               name="posterUrl"
               variant="standard"
-              margin="normal"
+              
             />
             <FormLabel sx={labelProps}>Release Date</FormLabel>
             <TextField
@@ -82,7 +86,43 @@ import {
               onChange={handleChange}
               name="releaseDate"
               variant="standard"
-              margin="normal"
+             
+            />
+            <FormLabel sx={labelProps}>Genre</FormLabel>
+            <TextField
+             
+              value={inputs.genre}
+              onChange={handleChange}
+              name="genre"
+              variant="standard"
+             
+            />
+            <FormLabel sx={labelProps}>Language</FormLabel>
+            <TextField
+             
+              value={inputs.language}
+              onChange={handleChange}
+              name="language"
+              variant="standard"
+             
+            />
+            <FormLabel sx={labelProps}>Seat Rows</FormLabel>
+            <TextField
+             
+              value={inputs.seatRow}
+              onChange={handleChange}
+              name="seatRow"
+              variant="standard"
+             
+            />
+            <FormLabel sx={labelProps}>Seat Columns</FormLabel>
+            <TextField
+             
+              value={inputs.seatCol}
+              onChange={handleChange}
+              name="seatCol"
+              variant="standard"
+             
             />
             <FormLabel sx={labelProps}>Actor</FormLabel>
             <Box display={"flex"}>
@@ -91,7 +131,7 @@ import {
                 name="actor"
                 onChange={(e) => setActor(e.target.value)}
                 variant="standard"
-                margin="normal"
+                
               />
               <Button
                 onClick={() => {
@@ -102,8 +142,7 @@ import {
                 Add
               </Button>
             </Box>
-            <FormLabel sx={labelProps}>Featured</FormLabel>
-            <Checkbox
+            <FormLabel sx={labelProps}>Featured <Checkbox
               name="fetaured"
               checked={inputs.featured}
               onClick={(e) =>
@@ -113,7 +152,8 @@ import {
                 }))
               }
               sx={{ mr: "auto" }}
-            />
+            /> </FormLabel>
+            
             <Button
               type="submit"
               variant="contained"

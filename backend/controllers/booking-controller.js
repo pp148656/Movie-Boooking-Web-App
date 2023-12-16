@@ -33,6 +33,7 @@ export const newBooking = async (req, res, next) => {
     session.startTransaction();
     existingUser.bookings.push(booking);
     existingMovie.bookings.push(booking);
+    existingMovie.bookedSeats[seatNumber-1]=true;
     await existingUser.save({ session });
     await existingMovie.save({ session });
     await booking.save({ session });
@@ -44,6 +45,7 @@ export const newBooking = async (req, res, next) => {
   if (!booking) {
     return res.status(500).json({ message: "Unable to create a booking" });
   }
+  
 
   return res.status(201).json({ booking });
 };
@@ -67,14 +69,19 @@ export const deleteBooking = async (req, res, next) => {
   let booking;
 //   The properties that we want to use .populate() on are properties that have a type of mongoose.Schema.Types.ObjectId. This tells Mongoose “Hey, I’m gonna be referencing other documents from other collections”. The next part of that property is the ref. The ref tells Mongoose “Those docs are going to be in the ___ collection.”
 //.pull is used to pull or remove that item from the array automatically
-
+ 
   try {
     booking = await Bookings.findByIdAndRemove(id).populate("user movie");
     console.log(booking);
+    let existingMovie=await Movie.findById(booking.movie);
+    let seatNumber=booking.seatNumber;
     const session = await mongoose.startSession();
     session.startTransaction();
+    existingMovie.bookedSeats[seatNumber-1]=false;
     await booking.user.bookings.pull(booking);
+    
     await booking.movie.bookings.pull(booking);
+    await existingMovie.save({ session });
     await booking.movie.save({ session });
     await booking.user.save({ session });
     session.commitTransaction();

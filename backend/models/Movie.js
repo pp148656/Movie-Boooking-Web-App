@@ -21,11 +21,24 @@ const movieSchema = new mongoose.Schema({
   featured: {
     type: Boolean,
   },
-  // genre: {
-  //   type: String,
-  //   required: true,
-  // },
+  genre: {
+    type: String,
+    required: true,
+  },
   bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
+  language: {
+    type: String,
+    required:true,
+  },
+  seatRow:{
+    type: Number,
+    required:true,
+  },
+  seatCol:{
+    type: Number,
+    required:true,
+  },
+  bookedSeats:[{type:Boolean}],
   admin: {
     type: mongoose.Types.ObjectId,
     ref: "Admin",
