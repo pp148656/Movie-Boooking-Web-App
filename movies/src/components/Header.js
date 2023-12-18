@@ -61,7 +61,7 @@ const Header = () => {
                 sx={{ input: { color: "white" } }}
                 variant="standard"
                 {...params}
-                placeholder="Search Across Multiple Movies"
+                placeholder="Search Services"
               />
             )}
           />
@@ -73,7 +73,7 @@ const Header = () => {
             value={value}
             onChange={(e, val) => setValue(val)}
           >
-            <Tab LinkComponent={Link} to="/movies" label="Movies" />
+            <Tab LinkComponent={Link} to="/services" label="Services" />
             {!isAdminLoggedIn && !isUserLoggedIn && (
               <>
                 <Tab label="Admin" LinkComponent={Link} to="/admin" />
@@ -82,7 +82,7 @@ const Header = () => {
             )}
             {isUserLoggedIn && (
               <>
-                <Tab label="Profile" LinkComponent={Link} to="/user" />
+                <Tab label="My Appointments" LinkComponent={Link} to="/user" />
                 <Tab
                   onClick={() => logout(false)}
                   label="Logout"
@@ -93,8 +93,8 @@ const Header = () => {
             )}
             {isAdminLoggedIn && (
               <>
-                <Tab label="Add Movie" LinkComponent={Link} to="/add" />
-                <Tab label="Profile" LinkComponent={Link} to="/user-admin" />
+                <Tab label="Add Services" LinkComponent={Link} to="/add" />
+                <Tab label="Scheduled Appointments" LinkComponent={Link} to="/user-admin" />
                 <Tab
                   onClick={() => logout(true)}
                   label="Logout"

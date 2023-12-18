@@ -37,7 +37,7 @@ function App() {
      <section>
      <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/movies" element={<Movies />} />
+          <Route path="/services" element={<Movies />} />
           {!isUserLoggedIn && !isAdminLoggedIn && (
             <>
               {" "}

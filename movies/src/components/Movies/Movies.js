@@ -10,23 +10,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import IconButton from '@mui/material/IconButton';
 
 const Movies = () => {
-  const genres = [
-    { label: 'Drama', value: 'Drama' },
-    { label: 'Horror', value: 'Horror' },
-    { label: 'Comedy', value: 'Comedy' },
-    { label: 'Action', value: 'Action' },
-    { label: 'Romance', value: 'Romance' }
-    // Add more GselectedGenre as needed
-  ];
-
-  const languages = [
-    { label: 'Hindi', value: 'Hindi' },
-    { label: 'Engilsh', value: 'Engilsh' },
-    { label: 'Marathi', value: 'Marathi' },
-    { label: 'Tamil', value: 'Tamil' },
-    { label: 'Telugu', value: 'Telugu' }
-    // Add more GselectedGenre as needed
-  ];
+  const [genres, setGenres] = useState([]);
+  const [languages, setLanguages] = useState([]);
 
   const filterMovies = (movies, selectedGenres, selectedLanguages) => {
     return movies.filter((movie) => {
@@ -70,6 +55,9 @@ const Movies = () => {
     getAllMovies()
     .then((data) => {
       setMovies(data.movies);
+      
+      setGenres([...new Set(data.movies.map(movie => movie.genre))]);
+      setLanguages([...new Set(data.movies.map(movie => movie.language))]);
       const filteredMovies = filterMovies(data.movies, selectedGenre, selectedLang);
       setFilterMovies(filteredMovies);
     })
@@ -82,23 +70,23 @@ const Movies = () => {
       <FormControl component="fieldset">
       
         <IconButton  style={{ fontSize: '20px' }} onClick={toggleDropdown1} >
-          Genre <ExpandMoreIcon />
+          Type <ExpandMoreIcon />
         </IconButton>
         {isOpen && (
           <FormGroup >
             {genres.map(option => (
                <div style={{ marginLeft: '10px' }}>
               <FormControlLabel
-                key={option.value}
+                key={option}
                 
                 control={
                  
                   <Checkbox
-                    checked={selectedGenre.includes(option.value)}
-                    onChange={() => handleGenreToggle(option.value)}
+                    checked={selectedGenre.includes(option)}
+                    onChange={() => handleGenreToggle(option)}
                   />
                 }
-                label={option.label}
+                label={option}
               />
               </div>
             ))}
@@ -111,7 +99,7 @@ const Movies = () => {
       
         <IconButton style={{ fontSize: '20px' }} onClick={toggleDropdown2} >
           
-          Language <ExpandMoreIcon />
+          City <ExpandMoreIcon />
           
         </IconButton>
         
@@ -120,16 +108,16 @@ const Movies = () => {
             {languages.map(option => (
                <div style={{ marginLeft: '10px' }}>
               <FormControlLabel
-                key={option.value}
+                key={option}
                 
                 control={
                  
                   <Checkbox
-                    checked={selectedLang.includes(option.value)}
-                    onChange={() => handleLangToggle(option.value)}
+                    checked={selectedLang.includes(option)}
+                    onChange={() => handleLangToggle(option)}
                   />
                 }
-                label={option.label} 
+                label={option} 
               />
               </div>
             ))}
@@ -153,7 +141,7 @@ const Movies = () => {
         color="white"
         textAlign={"center"}
       >
-        All Movies
+        All Services
       </Typography>
       <Box
         width={"100%"}
@@ -168,6 +156,9 @@ const Movies = () => {
             <MovieItem
               key={index}
               id={movie._id}
+              fees={movie.seatRow}
+              city={movie.language}
+              description={movie.description}
               posterUrl={movie.posterUrl}
               releaseDate={movie.releaseDate}
               title={movie.title}

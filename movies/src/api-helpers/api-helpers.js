@@ -56,9 +56,11 @@ export const newBooking = async (data) => {
   const res = await axios
     .post("/booking", {
       movie: data.movie,
-      seatNumber: data.seatNumber,
+      
       date: data.date,
       user: localStorage.getItem("userId"),
+      startTime: data.startTime.toString(),
+      endTime: data.endTime.toString()
     })
     .catch((err) => console.log(err));
 
@@ -115,7 +117,11 @@ export const addMovie = async (data) => {
         description: data.description,
         releaseDate: data.releaseDate,
         posterUrl: data.posterUrl,
-        fetaured: data.fetaured,
+        fetaured: data.featured,
+        genre: data.genre,
+        language: data.language,
+        seatRow: data.seatRow,
+        seatCol: data.seatCol,
         actors: data.actors,
         admin: localStorage.getItem("adminId"),
       },

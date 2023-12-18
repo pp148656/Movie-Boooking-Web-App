@@ -3,53 +3,39 @@ import { Box } from "@mui/system";
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMovieDetails, newBooking } from "../../api-helpers/api-helpers";
-import FormControl from '@mui/material/FormControl';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import IconButton from '@mui/material/IconButton';
+
+
+
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+
+// import DateTimePicker from '@mui/lab/DateTimePicker';
 import './Styles.css';
+// import TimePicker from 'react-time-picker';
 import AlertButton from "./showAlert";
 
 const Booking = () => {
  //booking alert
  const [showAlert, setShowAlert] = useState(false);
+ const [startTime, setStartTime] = useState(""); // Separate state for start time
+ const [endTime, setEndTime] = useState(""); // Separate state for end time
 
  //clicking the dropdown icon
   const handleClick=(e)=>{
     setInputs((prevState) => ({
       ...prevState,seatNumber:e.target.value}));
   }
-  //rendering the seats
-  const renderButtons = (numCols,numRows) => {
-    const buttons = [];
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        if(movie.bookedSeats[numCols*row+col]===true){
-          buttons.push(
-            <Grid item key={`button-${row}-${col}`}>
-            
-                <Button variant="contained"  value={row  * numCols + col + 1} >
-                  {row * numCols + col + 1}
-                </Button>
-              
-              
-            </Grid>);
-        }
-        else{
-        buttons.push(
-          <Grid item key={`button-${row}-${col}`}>
-          
-              <Button variant="contained" color="grey" value={row * numCols + col + 1} onClick={handleClick}>
-                {row * numCols + col + 1}
-              </Button>
-            
-            
-          </Grid>
-        );
-        }
-      }
-    }
-    return buttons;
+
+  const handleStartTimeChange = (value) => {
+    setStartTime(value);
   };
+  const handleEndTimeChange = (value) => {
+    setEndTime(value);
+  };
+
+
 
   const [isOpen,setIsOpen]=useState(false);
   const toggleDropdown1 = () => {
@@ -61,7 +47,8 @@ const Booking = () => {
   const [inputs, setInputs] = useState({ seatNumber: "", date: "" });
   const id = useParams().id;
   console.log(id);
-
+ 
+  
   useEffect(() => {
     getMovieDetails(id)
       .then((res) => setMovie(res.movie))
@@ -74,16 +61,33 @@ const Booking = () => {
     }));
   };
  
+  
+  const canBook = () => {
+    // Add your custom conditions here
+    // For example, check if startTime is before endTime
+    // You can add more conditions based on your requirements
+    if (inputs.date && startTime && endTime && startTime < endTime) {
+      return true;
+    }
+    return false;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(inputs);
-    newBooking({ ...inputs, movie: movie._id })
+    if(canBook())
+    {newBooking({ ...inputs, movie: movie._id, startTime, endTime })
       .then((res) => console.log(res)).then(setShowAlert(true))
       .catch((err) => console.log(err)); 
     setInputs({date:"",seatNumber:""});
-    setIsOpen(false);
+    setIsOpen(false);}
+    else{
+      console.log("Booking is not allowed. Check your conditions.");
+    }
   };
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+
     <div>
       {movie && (
         <Fragment>
@@ -93,11 +97,9 @@ const Booking = () => {
             variant="h4"
             textAlign={"center"}
           >
-            Book Tickets Of Movie: {movie.title}
+            Book Slot: {movie.title}
           </Typography>
-          <div style={{margin:"0px 30% 0px 30%" ,alignSelf:"center"}}>
-          <AlertButton showAlert={showAlert} setShowAlert={setShowAlert}/>
-          </div>
+          
           <Box display={"flex"} justifyContent={"center"}>
             <Box
               display={"flex"}
@@ -114,17 +116,14 @@ const Booking = () => {
                 alt={movie.title}
               />
               <Box width={"80%"} marginTop={3} padding={2}>
-                <Typography paddingTop={2}>{movie.description}</Typography>
-                <Typography fontWeight={"bold"} marginTop={1}>
-                  Starrer:
-                  {movie.actors.map((actor) => " " + actor + " ")}
-                </Typography>
-                <Typography fontWeight={"bold"} marginTop={1}>
-                  Release Date: {new Date(movie.releaseDate).toDateString()}
-                </Typography>
+                <Typography paddingTop={2}>Name: {movie.description}</Typography>
+               
+                
                 {movie.genre && <Typography fontWeight={"bold"} marginTop={1}>
-                  Genre: {movie.genre}
+                  Facility Type: {movie.genre}
                 </Typography>}
+                <Typography paddingTop={2}>Fees: {movie.seatRow}</Typography>
+                <Typography paddingTop={2}>City: {movie.language}</Typography>
               </Box>
             </Box>
             <Box width={"50%"} paddingTop={3}>
@@ -135,7 +134,7 @@ const Booking = () => {
                   display="flex"
                   flexDirection={"column"}
                 >
-                  <FormLabel>Seat Number</FormLabel>
+                  {/* <FormLabel>Seat Number</FormLabel>
                   <TextField
                     name="seatNumber"
                     value={inputs.seatNumber}
@@ -143,9 +142,9 @@ const Booking = () => {
                     type={"number"}
                     margin="normal"
                     variant="standard"
-                  />
+                  /> */}
                  
-                    <IconButton  style={{ fontSize: '20px' }} onClick={toggleDropdown1} >
+                    {/* <IconButton  style={{ fontSize: '20px' }} onClick={toggleDropdown1} >
                       <ExpandMoreIcon />
                     </IconButton>
                     {isOpen && (
@@ -154,9 +153,9 @@ const Booking = () => {
                        gap: '2px'}}>
                         {renderButtons(movie.seatCol,movie.seatRow)}
                       </div>
-                    )}
+                    )} */}
                   
-                  <FormLabel>Booking Date</FormLabel>
+                  <FormLabel required>Booking Date</FormLabel>
                   <TextField
                     name="date"
                     type={"date"}
@@ -165,9 +164,21 @@ const Booking = () => {
                     value={inputs.date}
                     onChange={handleChange}
                   />
+                  
+                  <FormLabel required>Start Time</FormLabel>
+                  <TimePicker
+                    value={startTime}
+                    onChange={handleStartTimeChange}
+                  />
+                  <FormLabel>End Time</FormLabel>
+                  <TimePicker
+                    value={endTime}
+                    onChange={handleEndTimeChange}
+                  />
                   <Button type="submit" sx={{ mt: 3 }}>
                     Book Now
                   </Button>
+                  
                 </Box>
               </form>
             </Box>
@@ -175,7 +186,7 @@ const Booking = () => {
         </Fragment>
       )}
     </div>
-  );
+  </LocalizationProvider>);
 };
 
 export default Booking;

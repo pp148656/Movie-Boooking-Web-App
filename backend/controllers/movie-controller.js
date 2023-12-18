@@ -31,12 +31,14 @@ export const addMovie = async (req, res, next) => {
     !description &&
     description.trim() == "" &&
     !posterUrl &&
-    posterUrl.trim() === ""
+    posterUrl.trim() === "" 
   ) {
     return res.status(422).json({ message: "Invalid Inputs" });
   }
-  let booked= new Array(seatCol*seatRow);
-  for(let i=0;i<seatCol*seatRow;i++){
+  
+ 
+  let booked= new Array(1);
+  for(let i=0;i<1;i++){
     booked[i]=false;
   }
    let movie;

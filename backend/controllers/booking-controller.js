@@ -3,37 +3,99 @@ import Bookings from "../models/Bookings";
 import Movie from "../models/Movie";
 import User from "../models/User";
 
+
+const extractTime = (dateString) => {
+  const dateObject = new Date(dateString);
+  const hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  
+  // Format the time as needed, for example, "HH:mm"
+  const formattedTime = `${hours}:${minutes}`;
+  
+  return formattedTime;
+};
+const strToInt = (timeString) => {
+  // Extract hour and minute from the timeString
+  const [hourStr, minuteStr] = timeString.split(':');
+  
+  // Convert the extracted strings to integers
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+  // console.log(hour*100+minute);
+ 
+
+  return hour*100+minute;
+};
+
+const conditionChecker = ({bookingsarr, targetDate, startTime, endTime }) => {
+  // Add your custom conditions here
+  // For example, check if startTime is before endTime
+  // You can add more conditions based on your requirements
+  
+  
+  let bookingsarray= bookingsarr.filter(( booking ) => {const bookingDate = new Date(booking.date); return(bookingDate.toISOString().split('T')[0] === targetDate.toISOString().split('T')[0]);});
+  
+  
+
+  const existingStartTimes = bookingsarray.map((booking) => extractTime(booking.startTime));
+  const existingEndTimes = bookingsarray.map((booking) => extractTime(booking.endTime));
+  
+  // Convert startTime and endTime to timestamps for comparison
+  const startTimestamp = extractTime(startTime);
+  const endTimestamp = extractTime(endTime);
+
+  const isSlotAvailable = !existingStartTimes.some((existingStartTime, index) => {
+    const existingEndTime = existingEndTimes[index];
+   
+    return (
+      (strToInt(startTimestamp) >= strToInt(existingStartTime) && strToInt(startTimestamp) < strToInt(existingEndTime)) ||
+      (strToInt(endTimestamp) > strToInt(existingStartTime) && strToInt(endTimestamp) <= strToInt(existingEndTime)) ||
+      (strToInt(startTimestamp) <= strToInt(existingStartTime) && strToInt(endTimestamp) >= strToInt(existingEndTime))
+    );
+  });
+  // console.log(isSlotAvailable);
+  return isSlotAvailable;
+};
 export const newBooking = async (req, res, next) => {
-  const { movie, date, seatNumber, user } = req.body;
+  const { movie, date, user, startTime, endTime } = req.body;
 
   let existingMovie;
   let existingUser;
+  let booking;
   try {
     existingMovie = await Movie.findById(movie);
     existingUser = await User.findById(user);
   } catch (err) {
     return console.log(err);
   }
+  
   if (!existingMovie) {
     return res.status(404).json({ message: "Movie Not Found With Given ID" });
   }
   if (!user) {
     return res.status(404).json({ message: "User not found with given ID " });
   }
-  let booking;
-
+  let targetDate= new Date(`${date}`);
+  console.log("ravimvc");
+  const bookingsarr = await Bookings.find({ movie: movie });
+  console.log(conditionChecker({bookingsarr,targetDate,startTime,endTime}));
+  if(conditionChecker({bookingsarr,targetDate,startTime,endTime})===false){
+    console.log("hehe");
+    return res.status(404).json({message: "Slot isn't available"});
+  }
   try {
     booking = new Bookings({
       movie,
       date: new Date(`${date}`),
-      seatNumber,
       user,
+      startTime,
+      endTime
     });
     const session = await mongoose.startSession();
     session.startTransaction();
     existingUser.bookings.push(booking);
     existingMovie.bookings.push(booking);
-    existingMovie.bookedSeats[seatNumber-1]=true;
+  
     await existingUser.save({ session });
     await existingMovie.save({ session });
     await booking.save({ session });

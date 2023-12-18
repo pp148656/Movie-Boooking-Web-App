@@ -12,7 +12,7 @@ const movieSchema = new mongoose.Schema({
   actors: [{ type: String, required: true }],
   releaseDate: {
     type: Date,
-    required: true,
+   
   },
   posterUrl: {
     type: String,
@@ -31,12 +31,12 @@ const movieSchema = new mongoose.Schema({
     required:true,
   },
   seatRow:{
-    type: Number,
+    type: String,
     required:true,
   },
   seatCol:{
-    type: Number,
-    required:true,
+    type: String,
+    
   },
   bookedSeats:[{type:Boolean}],
   admin: {

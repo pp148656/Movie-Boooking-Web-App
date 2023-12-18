@@ -78,7 +78,12 @@ const User = () => {
                   <ListItemText
                     sx={{ margin: 1, width: "100px", textAlign: "left" }}
                   >
-                    Seat: {booking.seatNumber}
+                    Start Time: {booking.startTime}
+                  </ListItemText>
+                  <ListItemText
+                    sx={{ margin: 1, width: "100px", textAlign: "left" }}
+                  >
+                    End Time: {booking.endTime}
                   </ListItemText>
                   <ListItemText
                     sx={{ margin: 1, width: "100px", textAlign: "left" }}

@@ -46,7 +46,7 @@ const AdminProfile = () => {
               textAlign="center"
               padding={2}
             >
-              Added Movies
+              Added Services
             </Typography>
             <Box
               margin={"auto"}
@@ -67,7 +67,7 @@ const AdminProfile = () => {
                     <ListItemText
                       sx={{ margin: 1, width: "auto", textAlign: "left" }}
                     >
-                      Movie: {movie.title}
+                    Service: {movie.title}
                     </ListItemText>
                   </ListItem>
                 ))}
