@@ -1,4 +1,4 @@
-# Movie Boooking Web App
+# Sevice Boooking Web App
  Users can book movies. Admins can add movies.
  //to start the frontend 
  npm start
