@@ -73,7 +73,7 @@ const User = () => {
                   <ListItemText
                     sx={{ margin: 1, width: "100px", textAlign: "left" }}
                   >
-                    Movie: {booking.movie.title}
+                    Service: {booking.movie.title}
                   </ListItemText>
                   <ListItemText
                     sx={{ margin: 1, width: "100px", textAlign: "left" }}
